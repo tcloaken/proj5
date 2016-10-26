@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html> <head>
-<title>ACP Controle Times</title>
+<title>Map stuff</title>
 
   <!-- 'viewport' is used by bootstrap to respond to device size -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,91 +29,26 @@
    <link rel="stylesheet" href="/static/css/calc.css" />
 
 <body>
-<!-- bootstrap requires a 'container' div around content -->
-<div class="container">
 
-<h1>ACP Brevet Times</h1>
-  <p>This worksheet is for ACP-sanctioned brevets between 200 and 1000 kilometers</p>
+<div id="map" style="height: 250px;"></div>
 
-  <!--
-  -- If there are any warnings or other messages from a prior
-  -- request to the server, 
-  -- they appear above the rest of the content, just until the next 
-  -- action.  (This is only on request/response transactions that
-  -- result in regenerating the page, not on every xmlhttp request.) 
-  -->
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
-<!-- Design on bootstrap grid -->
-<form role="form">
-<div class="row">
-  <div class="col-md-4">
-    <label>Distance</label>
-  <select name="distance" id="brevet_dist_km">
-    <option value="200">200km</option>
-    <option value="300">300km</option>
-    <option value="400">400km</option>
-    <option value="600">600km</option>
-    <option value="1000">1000km</option>
-  </select>
-  </div> <!-- columns 1--4  -->
-  <div class="col-md-6">
-    <label>Begins at</label>
-    <input type=date name="begin_date" id="begin_date" value="2017-01-01" />
-    <input type=time name="begin_time" id="begin_time" value="00:00"    />
-  </div> <!-- columns 5-10 -->
-  </div> <!-- row -->
-
-  <br />  <!-- Cosmetic -- a little vertical space -->
-  <!-- Although we do not use tables for general page layout, they are
-       appropriate for something that really is a table, like this
-       one.  We allocate it the full 12 columns of the bootstrap grid.
-  -->
-  <div class="row">
-  <div class="col-md-12"> 
-  <table class="control_time_table">
-      <tr>
-	<th> Miles </th>
-	<th> Km </th>
-	<th>Location</th>
-	<th>Open</th>
-	<th>Close</th>
-	<th>Notes</th>
-      </tr>
-   {% for row in range(20) %}
-    <tr class="control">
-      <!-- Dist (mi) -->
-      <td><input name="miles" type="number" 
-           min="0" max="900" size="5" /></td>
-      <!-- Dist (km) -->
-      <td><input name="km" type="text"
-	   min="0" max="1100" size="5" /> </td>
-      <!-- Location (optional) -->
-      <td><input name="location" type="text" 
-        placeholder="Optional location name"
-	size="20" /> </td>
-      <!-- Open time (read only, set by JavaScript function -->
-      <td><input name="open" type="datetime" value="" readonly /></td>
-      <!-- Close time (read only, set by JavaScript function -->
-      <td><input name="close" type="datetime" value="" readonly /></td>
-      <!-- Notes (error messages for this row) -->
-      <td class="notes"> &nbsp; </td>
-    </tr>
-    {% endfor %}
-  </table>
-  </div> <!-- col -->
-  </div> <!-- row -->
-</form>
-
+<script type="text/javascript">
+  // The first parameter are the coordinates of the center of the map
+  // The second parameter is the zoom level
+  var map = L.map('map').setView([ 44.0521, -123.0868], 12);
+  
+  // {s}, {z}, {x} and {y} are placeholders for map tiles
+  // {x} and {y} are the x/y of where you are on the map
+  // {z} is the zoom level
+  // {s} is the subdomain of cartodb
+    var layer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+  });
+  
+  // Now add the layer onto the map
+  map.addLayer(layer);
+</script>
+<!--
 <script type="text/javascript">
 
   var SCRIPT_ROOT = {{ request.script_root|tojson|safe }} ;
@@ -177,6 +112,6 @@
      });   // end of what we do on document ready
 
 </script>
-
+-->
 </div>
 </body> </html>

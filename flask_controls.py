@@ -21,7 +21,7 @@ import datetime # But we still need time
 from dateutil import tz  # For interpreting local times
 
 # Our own module
-import acp_times
+#import acp_times
 
 ###
 # Globals
@@ -41,7 +41,7 @@ app.secret_key = CONFIG.secret_key  # Should allow using session variables
 @app.route("/index")
 def index():
   app.logger.debug("Main page entry")
-  return flask.render_template('calc.html')
+  return flask.render_template('map.html')
 
 
 @app.errorhandler(404)
