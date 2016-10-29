@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html> <head>
-<title>Map stuff</title>
+<title>Map attack</title>
 
   <!-- 'viewport' is used by bootstrap to respond to device size -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,18 +19,17 @@
    <!-- leaflet -->
  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.1/leaflet.css" />
  <script src="http://cdn.leafletjs.com/leaflet/v1.0.1/leaflet.js"></script>
-  <!-- moment.js is the JavaScript equivalent of arrow.py -->
-  <script 
-    src="{{ url_for('static', filename="js/moment.min.js") }}"></script>
+ <!-- mapbox -->
+<script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
 
+ 
+  
 </head>
 
-   <!-- Our own style sheet -->
-   <link rel="stylesheet" href="/static/css/calc.css" />
 
 <body>
-
-<div id="map" style="height: 250px;"></div>
+<div id="map" style="height: 100%;"></div>
 
 <script type="text/javascript">
   // The first parameter are the coordinates of the center of the map
@@ -41,77 +40,51 @@
   // {x} and {y} are the x/y of where you are on the map
   // {z} is the zoom level
   // {s} is the subdomain of cartodb
-    var layer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+    var layer = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+	accessToken: 
   });
   
+
   // Now add the layer onto the map
   map.addLayer(layer);
-</script>
-<!--
-<script type="text/javascript">
+  
 
-  var SCRIPT_ROOT = {{ request.script_root|tojson|safe }} ;
-  var TIME_CALC_URL = SCRIPT_ROOT + "/_calc_times";
+var popup = L.popup()
+    	.setLatLng([44.0521, -123.0868])
+    	.setContent("Eugene, OR")
+    	.openOn(map);
 
-  // Pass calctimes a <td> element containing the data for a control.
-  // It extracts the distance and calls the server to get times to
-  // fill in open and close times in a human-readable format.
-  // (If we want to also keep the ISO-formatted times, we'll need to
-  // stash them in hidden fields.) 
-  function calc_times(control,distance,date,time) {
-    var km = control.find("input[name='km']").val();
-    var dist = $("#brevet_dist_km").val();
-    var start_date = $("#begin_date").val();
-    var start_time = $("#begin_time").val();
-    var open_time_field = control.find("input[name='open']");
-    var close_time_field = control.find("input[name='close']");
-    
-    $.getJSON(TIME_CALC_URL, { km: km, 
-                               dist: dist, 
-                               start_date: start_date, 
-                               start_time: start_time }, 
-      // response handler
-      function(data) {
-         var times = data.result;
-         console.log("Got a response: " +  times);
-         console.log("Response.open = " + times.open);
-         open_time_field.val( moment(times.open).format("ddd M/D H:mm"));
-         close_time_field.val( moment(times.close).format("ddd M/D H:mm"));
-       } // end of handler function
-     );// End of getJSON
-    }
+var marker = L.marker([{{session.lat[session.dest[0]]}},{{session.long[session.dest[0]]}}]).addTo(map);
+var marker = L.marker([{{session.lat[session.dest[1]]}},{{session.long[session.dest[1]]}}]).addTo(map);
+var marker = L.marker([{{session.lat[session.dest[2]]}},{{session.long[session.dest[2]]}}]).addTo(map);
+var res = ""
+function onMapClick(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng.toString())
+        .openOn(map);
+		
+	map.geocodeReverse(
+  { latitude: e.latlng.lat, longitude: e.latlng.lng },
+  function(err, res) {
+  // res is a GeoJSON document with geocoding matches
+	
+	
+  })
+  ;
+ layer = L.geoJSON().addTo(map);
+	layer.addData(res); 
+  
+  
+	}
 
-  $(document).ready(function(){
-   // Do the following when the page is finished loading
 
-      $('input[name="miles"]').change(
-         function() {
-             var miles = parseFloat($(this).val());
-             var km = (1.609344 * miles).toFixed(1) ;
-             console.log("Converted " + miles + " miles to " + km + " kilometers");
-             var control_entry = $(this).parents(".control")
-             var target = control_entry.find("input[name='km']");
-             target.val( km );
-             // Then calculate times for this entry
-             calc_times(control_entry);
-          });
 
-      $('input[name="km"]').change(
-         function() {
-             var km = parseFloat($(this).val());
-             var miles = (0.621371 * km).toFixed(1) ;
-             console.log("Converted " + km + " km to " + miles + " miles");
-             var control_entry = $(this).parents(".control")
-             var target = control_entry.find("input[name='miles']");
-             target.val( miles );
-             // Then calculate times for this entry
-             calc_times(control_entry);
-          });
+	
+map.on('click', onMapClick);
 
-     });   // end of what we do on document ready
 
 </script>
--->
-</div>
+
 </body> </html>
