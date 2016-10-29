@@ -42,7 +42,7 @@
   // {s} is the subdomain of cartodb
     var layer = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-	accessToken: 
+	accessToken: {{ session.secret }}
   });
   
 

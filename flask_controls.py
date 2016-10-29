@@ -32,9 +32,14 @@ app = flask.Flask(__name__)
 import CONFIG
 app.secret_key = CONFIG.secret_key  # Should allow using session variables
 
+import secrets
+
+accessToken = secrets.secret()
+
 ###
 # Pages
 ###
+
 page = CONFIG.POI
 dest = []
 lat = {}
@@ -56,6 +61,7 @@ def index():
   flask.session['lat'] = lat
   flask.session['long'] = long
   flask.session['dest'] = dest
+  flask.session['secret'] = str(accessToken)
   return flask.render_template('map.html')
 
 

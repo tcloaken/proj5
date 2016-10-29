@@ -36,6 +36,7 @@ DEBUG = True  # Set to False for production use
 secret_key="${secret}"
 number_of_bars = 3  # How many matches before we declare victory? 
 POI = "POI_file.txt"  # CHANGE THIS to use another vocabulary file
+secrets = "secrets.py"
 
 EOF
 }
